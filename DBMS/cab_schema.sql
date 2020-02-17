@@ -7,17 +7,6 @@ CREATE TABLE Customer(
     last_name VARCHAR(50)
 );
 
-CREATE TABLE Payment(
-    amount NUMBER(10),
-    p_id int PRIMARY KEY,
-    payment_mode VARCHAR(50),
-    c_id int NOT NULL,
-    CONSTRAINT fk_from_pay_to_cust FOREIGN KEY(c_id) 
-        REFERENCES Customer(c_id)
-        ON DELETE CASCADE
-        /*ON UPDATE CASCADE, Doesn't Work in Oracle*/
-);
-
 
 CREATE TABLE Trip(
     source VARCHAR(40),
@@ -27,6 +16,21 @@ CREATE TABLE Trip(
     arrival_date DATE
 );
 
+CREATE TABLE Payment(
+    amount NUMBER(10),
+    p_id int PRIMARY KEY,
+    payment_mode VARCHAR(50),
+    c_id int NOT NULL,
+    t_id int NOT NULL,
+    CONSTRAINT fk_from_pay_to_trip FOREIGN KEY(t_id) 
+        REFERENCES Trip(t_id)
+        ON DELETE CASCADE,
+        /*ON UPDATE CASCADE, Doesn't Work in Oracle*/
+    CONSTRAINT fk_from_pay_to_cust FOREIGN KEY(c_id) 
+        REFERENCES Customer(c_id)
+        ON DELETE CASCADE
+        /*ON UPDATE CASCADE, Doesn't Work in Oracle*/
+);
 
 CREATE TABLE Driver(
     driver_id int PRIMARY KEY,
