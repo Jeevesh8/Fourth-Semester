@@ -1,0 +1,1171 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 18 36 577 806
+%%Title: Enscript Output
+%%Creator: GNU Enscript 1.6.5.90
+%%CreationDate: Tue Feb 18 02:51:49 2020
+%%Orientation: Portrait
+%%Pages: (atend)
+%%DocumentMedia: A4 595 842 0 () ()
+%%DocumentNeededResources: (atend)
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset Enscript-Prolog 1.6.5 90
+%
+% Procedures.
+%
+
+/_S {	% save current state
+  /_s save def
+} def
+/_R {	% restore from saved state
+  _s restore
+} def
+
+/S {	% showpage protecting gstate
+  gsave
+  showpage
+  grestore
+} bind def
+
+/MF {	% fontname newfontname -> -	make a new encoded font
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  % insert only valid encoding vectors
+  encoding_vector length 256 eq {
+    newfont /Encoding encoding_vector put
+  } if
+
+  newfontname newfont definefont pop
+} def
+
+/MF_PS { % fontname newfontname -> -	make a new font preserving its enc
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  newfontname newfont definefont pop
+} def
+
+/SF { % fontname width height -> -	set a new font
+  /height exch def
+  /width exch def
+
+  findfont
+  [width 0 0 height 0 0] makefont setfont
+} def
+
+/SUF { % fontname width height -> -	set a new user font
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF
+  /F-gs-user-font width height SF
+} def
+
+/SUF_PS { % fontname width height -> -	set a new user font preserving its enc
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF_PS
+  /F-gs-user-font width height SF
+} def
+
+/M {moveto} bind def
+/s {show} bind def
+
+/Box {	% x y w h -> -			define box path
+  /d_h exch def /d_w exch def /d_y exch def /d_x exch def
+  d_x d_y  moveto
+  d_w 0 rlineto
+  0 d_h rlineto
+  d_w neg 0 rlineto
+  closepath
+} def
+
+/bgs {	% x y height blskip gray str -> -	show string with bg color
+  /str exch def
+  /gray exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    gray setgray
+    fill
+  grestore
+  x y M str s
+} def
+
+/bgcs { % x y height blskip red green blue str -> -  show string with bg color
+  /str exch def
+  /blue exch def
+  /green exch def
+  /red exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    red green blue setrgbcolor
+    fill
+  grestore
+  x y M str s
+} def
+
+% Highlight bars.
+/highlight_bars {	% nlines lineheight output_y_margin gray -> -
+  gsave
+    setgray
+    /ymarg exch def
+    /lineheight exch def
+    /nlines exch def
+
+    % This 2 is just a magic number to sync highlight lines to text.
+    0 d_header_y ymarg sub 2 sub translate
+
+    /cw d_output_w cols div def
+    /nrows d_output_h ymarg 2 mul sub lineheight div cvi def
+
+    % for each column
+    0 1 cols 1 sub {
+      cw mul /xp exch def
+
+      % for each rows
+      0 1 nrows 1 sub {
+        /rn exch def
+        rn lineheight mul neg /yp exch def
+        rn nlines idiv 2 mod 0 eq {
+	  % Draw highlight bar.  4 is just a magic indentation.
+	  xp 4 add yp cw 8 sub lineheight neg Box fill
+	} if
+      } for
+    } for
+
+  grestore
+} def
+
+% Line highlight bar.
+/line_highlight {	% x y width height gray -> -
+  gsave
+    /gray exch def
+    Box gray setgray fill
+  grestore
+} def
+
+% Column separator lines.
+/column_lines {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h translate
+    /cw d_output_w cols div def
+    1 1 cols 1 sub {
+      cw mul 0 moveto
+      0 d_output_h rlineto stroke
+    } for
+  grestore
+} def
+
+% Column borders.
+/column_borders {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h moveto
+    0 d_output_h rlineto
+    d_output_w 0 rlineto
+    0 d_output_h neg rlineto
+    closepath stroke
+  grestore
+} def
+
+% Do the actual underlay drawing
+/draw_underlay {
+  ul_style 0 eq {
+    ul_str true charpath stroke
+  } {
+    ul_str show
+  } ifelse
+} def
+
+% Underlay
+/underlay {	% - -> -
+  gsave
+    0 d_page_h translate
+    d_page_h neg d_page_w atan rotate
+
+    ul_gray setgray
+    ul_font setfont
+    /dw d_page_h dup mul d_page_w dup mul add sqrt def
+    ul_str stringwidth pop dw exch sub 2 div ul_h_ptsize -2 div moveto
+    draw_underlay
+  grestore
+} def
+
+/user_underlay {	% - -> -
+  gsave
+    ul_x ul_y translate
+    ul_angle rotate
+    ul_gray setgray
+    ul_font setfont
+    0 0 ul_h_ptsize 2 div sub moveto
+    draw_underlay
+  grestore
+} def
+
+% Page prefeed
+/page_prefeed {		% bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} def
+
+% Wrapped line markers
+/wrapped_line_mark {	% x y charwith charheight type -> -
+  /type exch def
+  /h exch def
+  /w exch def
+  /y exch def
+  /x exch def
+
+  type 2 eq {
+    % Black boxes (like TeX does)
+    gsave
+      0 setlinewidth
+      x w 4 div add y M
+      0 h rlineto w 2 div 0 rlineto 0 h neg rlineto
+      closepath fill
+    grestore
+  } {
+    type 3 eq {
+      % Small arrows
+      gsave
+        .2 setlinewidth
+        x w 2 div add y h 2 div add M
+        w 4 div 0 rlineto
+        x w 4 div add y lineto stroke
+
+        x w 4 div add w 8 div add y h 4 div add M
+        x w 4 div add y lineto
+	w 4 div h 8 div rlineto stroke
+      grestore
+    } {
+      % do nothing
+    } ifelse
+  } ifelse
+} def
+
+% EPSF import.
+
+/BeginEPSF {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack
+  userdict begin
+  /showpage { } def
+  0 setgray 0 setlinecap
+  1 setlinewidth 0 setlinejoin
+  10 setmiterlimit [ ] 0 setdash newpath
+  /languagelevel where {
+    pop languagelevel
+    1 ne {
+      false setstrokeadjust false setoverprint
+    } if
+  } if
+} bind def
+
+/EndEPSF {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+%%EndResource
+%%BeginResource: procset Enscript-Encoding-88591 1.6.5 90
+/encoding_vector [
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclam       	/quotedbl     	/numbersign   	
+/dollar       	/percent      	/ampersand    	/quoteright   	
+/parenleft    	/parenright   	/asterisk     	/plus         	
+/comma        	/hyphen       	/period       	/slash        	
+/zero         	/one          	/two          	/three        	
+/four         	/five         	/six          	/seven        	
+/eight        	/nine         	/colon        	/semicolon    	
+/less         	/equal        	/greater      	/question     	
+/at           	/A            	/B            	/C            	
+/D            	/E            	/F            	/G            	
+/H            	/I            	/J            	/K            	
+/L            	/M            	/N            	/O            	
+/P            	/Q            	/R            	/S            	
+/T            	/U            	/V            	/W            	
+/X            	/Y            	/Z            	/bracketleft  	
+/backslash    	/bracketright 	/asciicircum  	/underscore   	
+/quoteleft    	/a            	/b            	/c            	
+/d            	/e            	/f            	/g            	
+/h            	/i            	/j            	/k            	
+/l            	/m            	/n            	/o            	
+/p            	/q            	/r            	/s            	
+/t            	/u            	/v            	/w            	
+/x            	/y            	/z            	/braceleft    	
+/bar          	/braceright   	/tilde        	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclamdown   	/cent         	/sterling     	
+/currency     	/yen          	/brokenbar    	/section      	
+/dieresis     	/copyright    	/ordfeminine  	/guillemotleft	
+/logicalnot   	/hyphen       	/registered   	/macron       	
+/degree       	/plusminus    	/twosuperior  	/threesuperior	
+/acute        	/mu           	/paragraph    	/bullet       	
+/cedilla      	/onesuperior  	/ordmasculine 	/guillemotright	
+/onequarter   	/onehalf      	/threequarters	/questiondown 	
+/Agrave       	/Aacute       	/Acircumflex  	/Atilde       	
+/Adieresis    	/Aring        	/AE           	/Ccedilla     	
+/Egrave       	/Eacute       	/Ecircumflex  	/Edieresis    	
+/Igrave       	/Iacute       	/Icircumflex  	/Idieresis    	
+/Eth          	/Ntilde       	/Ograve       	/Oacute       	
+/Ocircumflex  	/Otilde       	/Odieresis    	/multiply     	
+/Oslash       	/Ugrave       	/Uacute       	/Ucircumflex  	
+/Udieresis    	/Yacute       	/Thorn        	/germandbls   	
+/agrave       	/aacute       	/acircumflex  	/atilde       	
+/adieresis    	/aring        	/ae           	/ccedilla     	
+/egrave       	/eacute       	/ecircumflex  	/edieresis    	
+/igrave       	/iacute       	/icircumflex  	/idieresis    	
+/eth          	/ntilde       	/ograve       	/oacute       	
+/ocircumflex  	/otilde       	/odieresis    	/divide       	
+/oslash       	/ugrave       	/uacute       	/ucircumflex  	
+/udieresis    	/yacute       	/thorn        	/ydieresis    	
+] def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Courier
+/HFpt_w 10 def
+/HFpt_h 10 def
+/Courier-Bold /HF-gs-font MF
+/HF /HF-gs-font findfont [HFpt_w 0 0 HFpt_h 0 0] makefont def
+/Courier /F-gs-font MF
+/F-gs-font 10 10 SF
+/#copies 1 def
+% Pagedevice definitions:
+gs_languagelevel 1 gt {
+  <<
+    /PageSize [595 842] 
+  >> setpagedevice
+} if
+%%BeginResource: procset Enscript-Header-enscript 1.6.5 90
+%%IncludeResource: font Times-Bold
+%%IncludeResource: font Times-Roman
+
+% Fonts.
+/Times-Bold /HeaderFont-Bold MF
+/HeaderDateF /HeaderFont-Bold findfont 12 scalefont def
+
+/Times-Roman /HeaderFont-Times MF
+/HeaderHDRF /HeaderFont-Times findfont 14 scalefont def
+
+/HeaderPageNumF /Helvetica-Bold findfont 28.8 scalefont def
+
+/do_header {	% print enscript header
+  gsave
+    d_header_x d_header_y translate
+
+    % light bar
+    0 0 d_header_w d_header_h 2 div Box
+    .95 setgray fill
+
+    % dark gray boxes
+    /dbw d_header_h 2 mul def	% dark box width
+    /dbc .7 def			% dark box color
+
+    % left dark box.
+    0 0 dbw d_header_h Box
+    dbc setgray fill
+
+    0 setgray 
+    HeaderDateF setfont
+    moddatestr dup stringwidth pop dbw exch sub 2 div 
+    d_header_h 2 div 2 add moveto show
+    modtimestr dup stringwidth pop dbw exch sub 2 div 
+    d_header_h 5 div moveto show
+
+    % right dark box
+    d_header_w dbw sub 0 dbw d_header_h Box
+    dbc setgray fill
+
+    HeaderPageNumF setfont
+    1 setgray
+    pagenumstr dup
+    stringwidth pop dbw exch sub 2 div d_header_w dbw sub add
+    d_header_h .2 mul moveto show
+
+    % filename
+    0 setgray 
+    HeaderHDRF setfont
+    d_header_w fname stringwidth pop sub 2 div d_header_h 8 div moveto
+    fname show
+
+    % user supplied header string.
+    user_header_p {
+      /h d_header_h 8 div 5 mul def
+
+      % Implement strict enscript compatibility.
+      user_header_center_str () eq user_header_right_str () eq and {
+        d_header_w user_header_left_str stringwidth pop sub 2 div 
+        h moveto user_header_left_str show
+      } {
+        dbw 5 add h moveto user_header_left_str show
+
+        d_header_w user_header_center_str stringwidth pop sub 2 div 
+        h moveto user_header_center_str show
+
+	d_header_w dbw sub 5 sub user_header_right_str stringwidth pop
+	sub h moveto user_header_right_str show
+      } ifelse
+    } if
+
+  grestore
+} def
+%%EndResource
+/d_page_w 559 def
+/d_page_h 770 def
+/d_header_x 0 def
+/d_header_y 734 def
+/d_header_w 559 def
+/d_header_h 36 def
+/d_footer_x 0 def
+/d_footer_y 0 def
+/d_footer_w 559 def
+/d_footer_h 0 def
+/d_output_w 559 def
+/d_output_h 734 def
+/cols 1 def
+%%EndSetup
+%%Page: (1) 1
+%%BeginPageSetup
+_S
+18 36 translate
+/pagenum 1 def
+/fname (InsertValues.sql) def
+/fdir (.) def
+/ftail (InsertValues.sql) def
+% User defined strings:
+/pagenumstr (1) def
+/moddatestr (02/18/20) def
+/modtimestr (02:49:35) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+30 721 M (1:) s
+/Courier-Bold 10 10 SUF
+48 721 M
+(INSERT) s
+/F-gs-font 10 10 SF
+84 721 M
+( ) s
+/Courier-Bold 10 10 SUF
+90 721 M
+(INTO) s
+/F-gs-font 10 10 SF
+114 721 M
+( Trip) s
+30 710 M (2:) s
+/Courier-Bold 10 10 SUF
+48 710 M
+(VALUES) s
+/F-gs-font 10 10 SF
+84 710 M
+(\() s
+/Courier-Bold 10 10 SUF
+90 710 M
+('DELHI') s
+/F-gs-font 10 10 SF
+132 710 M
+(, ) s
+/Courier-Bold 10 10 SUF
+144 710 M
+('MUMBAI') s
+/F-gs-font 10 10 SF
+192 710 M
+(, 0, ) s
+/Courier-Bold 10 10 SUF
+222 710 M
+('08-MAR-2020') s
+/F-gs-font 10 10 SF
+300 710 M
+(, ) s
+/Courier-Bold 10 10 SUF
+312 710 M
+('09-MAR-2020') s
+/F-gs-font 10 10 SF
+390 710 M
+(\);) s
+30 699 M (3:) s
+30 688 M (4:) s
+/Courier-Bold 10 10 SUF
+48 688 M
+(INSERT) s
+/F-gs-font 10 10 SF
+84 688 M
+( ) s
+/Courier-Bold 10 10 SUF
+90 688 M
+(ALL) s
+/F-gs-font 10 10 SF
+30 677 M (5:) s
+48 677 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 677 M
+(INTO) s
+/F-gs-font 10 10 SF
+96 677 M
+( Trip) s
+30 666 M (6:) s
+48 666 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 666 M
+(VALUES) s
+/F-gs-font 10 10 SF
+108 666 M
+(\() s
+/Courier-Bold 10 10 SUF
+114 666 M
+('BANGALORE') s
+/F-gs-font 10 10 SF
+180 666 M
+(, ) s
+/Courier-Bold 10 10 SUF
+192 666 M
+('COIMBATORE') s
+/F-gs-font 10 10 SF
+264 666 M
+(, 1, ) s
+/Courier-Bold 10 10 SUF
+294 666 M
+('08-MAR-2020') s
+/F-gs-font 10 10 SF
+372 666 M
+(, ) s
+/Courier-Bold 10 10 SUF
+384 666 M
+('08-MAR-2020') s
+/F-gs-font 10 10 SF
+462 666 M
+(\)) s
+30 655 M (7:) s
+48 655 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 655 M
+(INTO) s
+/F-gs-font 10 10 SF
+96 655 M
+( Trip) s
+30 644 M (8:) s
+48 644 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 644 M
+(VALUES) s
+/F-gs-font 10 10 SF
+108 644 M
+(\() s
+/Courier-Bold 10 10 SUF
+114 644 M
+('KOLKATTA') s
+/F-gs-font 10 10 SF
+174 644 M
+(, ) s
+/Courier-Bold 10 10 SUF
+186 644 M
+('MADRAS') s
+/F-gs-font 10 10 SF
+234 644 M
+(, 2, ) s
+/Courier-Bold 10 10 SUF
+264 644 M
+('08-MAR-2020') s
+/F-gs-font 10 10 SF
+342 644 M
+(, ) s
+/Courier-Bold 10 10 SUF
+354 644 M
+('10-MAR-2020') s
+/F-gs-font 10 10 SF
+432 644 M
+(\)) s
+30 633 M (9:) s
+48 633 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 633 M
+(INTO) s
+/F-gs-font 10 10 SF
+96 633 M
+( Trip) s
+24 622 M (10:) s
+48 622 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 622 M
+(VALUES) s
+/F-gs-font 10 10 SF
+108 622 M
+(\() s
+/Courier-Bold 10 10 SUF
+114 622 M
+('AMRITSAR') s
+/F-gs-font 10 10 SF
+174 622 M
+(, ) s
+/Courier-Bold 10 10 SUF
+186 622 M
+('SHANGHAI') s
+/F-gs-font 10 10 SF
+246 622 M
+(, 3, ) s
+/Courier-Bold 10 10 SUF
+276 622 M
+('08-MAR-2020') s
+/F-gs-font 10 10 SF
+354 622 M
+(, ) s
+/Courier-Bold 10 10 SUF
+366 622 M
+('12-MAR-2020') s
+/F-gs-font 10 10 SF
+444 622 M
+(\)) s
+24 611 M (11:) s
+48 611 M
+(    ) s
+24 600 M (12:) s
+48 600 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 600 M
+(INTO) s
+/F-gs-font 10 10 SF
+96 600 M
+( Customer) s
+24 589 M (13:) s
+48 589 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 589 M
+(VALUES) s
+/F-gs-font 10 10 SF
+108 589 M
+(\(0,9205677801,) s
+/Courier-Bold 10 10 SUF
+192 589 M
+('B-32, Green Park') s
+/F-gs-font 10 10 SF
+300 589 M
+(, ) s
+/Courier-Bold 10 10 SUF
+312 589 M
+('sjsjs@gmail.com') s
+/F-gs-font 10 10 SF
+414 589 M
+(, ) s
+/Courier-Bold 10 10 SUF
+426 589 M
+('Aman') s
+/F-gs-font 10 10 SF
+462 589 M
+(, ) s
+/Courier-Bold 10 10 SUF
+474 589 M
+('Chauhan') s
+/F-gs-font 10 10 SF
+528 589 M
+(,2\)) s
+24 578 M (14:) s
+48 578 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 578 M
+(INTO) s
+/F-gs-font 10 10 SF
+96 578 M
+( Customer) s
+24 567 M (15:) s
+48 567 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 567 M
+(VALUES) s
+/F-gs-font 10 10 SF
+108 567 M
+(\(1,9205637801,) s
+/Courier-Bold 10 10 SUF
+192 567 M
+('B-34, Green Park') s
+/F-gs-font 10 10 SF
+300 567 M
+(, ) s
+/Courier-Bold 10 10 SUF
+312 567 M
+('sjs@gmail.com') s
+/F-gs-font 10 10 SF
+402 567 M
+(, ) s
+/Courier-Bold 10 10 SUF
+414 567 M
+('Amit') s
+/F-gs-font 10 10 SF
+450 567 M
+(, ) s
+/Courier-Bold 10 10 SUF
+462 567 M
+('Chauhan') s
+/F-gs-font 10 10 SF
+516 567 M
+(,3\)) s
+24 556 M (16:) s
+48 556 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 556 M
+(INTO) s
+/F-gs-font 10 10 SF
+96 556 M
+( Customer) s
+24 545 M (17:) s
+48 545 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 545 M
+(VALUES) s
+/F-gs-font 10 10 SF
+108 545 M
+(\(2,9105637801,) s
+/Courier-Bold 10 10 SUF
+192 545 M
+('A-34, Green Park') s
+/F-gs-font 10 10 SF
+300 545 M
+(, ) s
+/Courier-Bold 10 10 SUF
+312 545 M
+('vermajs@gmail.com') s
+/F-gs-font 10 10 SF
+426 545 M
+(, ) s
+/Courier-Bold 10 10 SUF
+438 545 M
+('Amit') s
+/F-gs-font 10 10 SF
+474 545 M
+(, ) s
+/Courier-Bold 10 10 SUF
+486 545 M
+('Verma') s
+/F-gs-font 10 10 SF
+528 545 M
+(,0\)) s
+24 534 M (18:) s
+48 534 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 534 M
+(INTO) s
+/F-gs-font 10 10 SF
+96 534 M
+( Customer) s
+24 523 M (19:) s
+48 523 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 523 M
+(VALUES) s
+/F-gs-font 10 10 SF
+108 523 M
+(\(3,9103637801,) s
+/Courier-Bold 10 10 SUF
+192 523 M
+('A-33, Green Park') s
+/F-gs-font 10 10 SF
+300 523 M
+(, ) s
+/Courier-Bold 10 10 SUF
+312 523 M
+('sharmajs@gmail.com') s
+/F-gs-font 10 10 SF
+432 523 M
+(, ) s
+/Courier-Bold 10 10 SUF
+444 523 M
+('Amit') s
+/F-gs-font 10 10 SF
+480 523 M
+(, ) s
+/Courier-Bold 10 10 SUF
+492 523 M
+('Sharma') s
+/F-gs-font 10 10 SF
+540 523 M
+(,0) s
+24 512 M (20:) s
+48 512 M
+(    ) s
+24 501 M (21:) s
+48 501 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 501 M
+(INTO) s
+/F-gs-font 10 10 SF
+96 501 M
+( Driver) s
+24 490 M (22:) s
+48 490 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 490 M
+(VALUES) s
+/F-gs-font 10 10 SF
+108 490 M
+(\(0,0.0,) s
+/Courier-Bold 10 10 SUF
+150 490 M
+('A-35, Green Park') s
+/F-gs-font 10 10 SF
+258 490 M
+(, 9311061144, ) s
+/Courier-Bold 10 10 SUF
+342 490 M
+('Suresh') s
+/F-gs-font 10 10 SF
+390 490 M
+(, ) s
+/Courier-Bold 10 10 SUF
+402 490 M
+('Kumar') s
+/F-gs-font 10 10 SF
+444 490 M
+(, 2\)) s
+24 479 M (23:) s
+48 479 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 479 M
+(INTO) s
+/F-gs-font 10 10 SF
+96 479 M
+( Driver) s
+24 468 M (24:) s
+48 468 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 468 M
+(VALUES) s
+/F-gs-font 10 10 SF
+108 468 M
+(\(1,0.0,) s
+/Courier-Bold 10 10 SUF
+150 468 M
+('AF-33, Green Park') s
+/F-gs-font 10 10 SF
+264 468 M
+(, 9311061244, ) s
+/Courier-Bold 10 10 SUF
+348 468 M
+('Yogesh') s
+/F-gs-font 10 10 SF
+396 468 M
+(, ) s
+/Courier-Bold 10 10 SUF
+408 468 M
+('Kumar') s
+/F-gs-font 10 10 SF
+450 468 M
+(, 0\)) s
+24 457 M (25:) s
+48 457 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 457 M
+(INTO) s
+/F-gs-font 10 10 SF
+96 457 M
+( Driver) s
+24 446 M (26:) s
+48 446 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 446 M
+(VALUES) s
+/F-gs-font 10 10 SF
+108 446 M
+(\(2,0.0,) s
+/Courier-Bold 10 10 SUF
+150 446 M
+('AS-33, Green Park') s
+/F-gs-font 10 10 SF
+264 446 M
+(, 9313061144, ) s
+/Courier-Bold 10 10 SUF
+348 446 M
+('Narendra') s
+/F-gs-font 10 10 SF
+408 446 M
+(, ) s
+/Courier-Bold 10 10 SUF
+420 446 M
+('Kumar') s
+/F-gs-font 10 10 SF
+462 446 M
+(, 3\)) s
+24 435 M (27:) s
+48 435 M
+(    ) s
+24 424 M (28:) s
+48 424 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 424 M
+(INTO) s
+/F-gs-font 10 10 SF
+96 424 M
+( Vehicle) s
+24 413 M (29:) s
+48 413 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 413 M
+(VALUES) s
+/F-gs-font 10 10 SF
+108 413 M
+(\() s
+/Courier-Bold 10 10 SUF
+114 413 M
+('K-2') s
+/F-gs-font 10 10 SF
+144 413 M
+(,4,123734534,0,1\)) s
+24 402 M (30:) s
+48 402 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 402 M
+(INTO) s
+/F-gs-font 10 10 SF
+96 402 M
+( Vehicle) s
+24 391 M (31:) s
+48 391 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 391 M
+(VALUES) s
+/F-gs-font 10 10 SF
+108 391 M
+(\() s
+/Courier-Bold 10 10 SUF
+114 391 M
+('K-1') s
+/F-gs-font 10 10 SF
+144 391 M
+(,6,123734234,1,1\)) s
+24 380 M (32:) s
+48 380 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 380 M
+(INTO) s
+/F-gs-font 10 10 SF
+96 380 M
+( Vehicle) s
+24 369 M (33:) s
+48 369 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 369 M
+(VALUES) s
+/F-gs-font 10 10 SF
+108 369 M
+(\() s
+/Courier-Bold 10 10 SUF
+114 369 M
+('K-0') s
+/F-gs-font 10 10 SF
+144 369 M
+(,4,113734534,2,0\)) s
+24 358 M (34:) s
+48 358 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 358 M
+(INTO) s
+/F-gs-font 10 10 SF
+96 358 M
+( Vehicle) s
+24 347 M (35:) s
+48 347 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 347 M
+(VALUES) s
+/F-gs-font 10 10 SF
+108 347 M
+(\() s
+/Courier-Bold 10 10 SUF
+114 347 M
+('M-2') s
+/F-gs-font 10 10 SF
+144 347 M
+(,5,123774534,3,2\)) s
+24 336 M (36:) s
+24 325 M (37:) s
+48 325 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 325 M
+(INTO) s
+/F-gs-font 10 10 SF
+96 325 M
+( Payment) s
+24 314 M (38:) s
+48 314 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 314 M
+(VALUES) s
+/F-gs-font 10 10 SF
+108 314 M
+(\(6000,63742,) s
+/Courier-Bold 10 10 SUF
+180 314 M
+('Debit Card') s
+/F-gs-font 10 10 SF
+252 314 M
+(,1,3\)) s
+24 303 M (39:) s
+48 303 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 303 M
+(INTO) s
+/F-gs-font 10 10 SF
+96 303 M
+( Payment) s
+24 292 M (40:) s
+48 292 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 292 M
+(VALUES) s
+/F-gs-font 10 10 SF
+108 292 M
+(\(8700,63827, ) s
+/Courier-Bold 10 10 SUF
+186 292 M
+('Credit Card') s
+/F-gs-font 10 10 SF
+264 292 M
+(,2,0\)) s
+24 281 M (41:) s
+48 281 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 281 M
+(INTO) s
+/F-gs-font 10 10 SF
+96 281 M
+( Payment) s
+24 270 M (42:) s
+48 270 M
+(    ) s
+/Courier-Bold 10 10 SUF
+72 270 M
+(VALUES) s
+/F-gs-font 10 10 SF
+108 270 M
+(\(9200, 63372, ) s
+/Courier-Bold 10 10 SUF
+192 270 M
+('Cash') s
+/F-gs-font 10 10 SF
+228 270 M
+(,0,2\)) s
+24 259 M (43:) s
+24 248 M (44:) s
+/Courier-Bold 10 10 SUF
+48 248 M
+(SELECT) s
+/F-gs-font 10 10 SF
+84 248 M
+( * ) s
+/Courier-Bold 10 10 SUF
+102 248 M
+(FROM) s
+/F-gs-font 10 10 SF
+126 248 M
+( dual ;) s
+_R
+S
+%%Trailer
+%%Pages: 1
+%%DocumentNeededResources: font Times-Roman Courier-Bold Courier 
+%%+ font Times-Bold 
+%%EOF
