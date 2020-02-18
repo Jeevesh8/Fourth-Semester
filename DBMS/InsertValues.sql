@@ -16,7 +16,7 @@ INSERT ALL
     INTO Customer
     VALUES(2,9105637801,'A-34, Green Park', 'vermajs@gmail.com', 'Amit', 'Verma',0)
     INTO Customer
-    VALUES(3,9103637801,'A-33, Green Park', 'sharmajs@gmail.com', 'Amit', 'Sharma',0)
+    VALUES(3,9103637801,'A-33, Green Park', 'sharmajs@gmail.com', 'Amit', 'Sharma',1)
     
     INTO Driver
     VALUES(0,0.0,'A-35, Green Park', 9311061144, 'Suresh', 'Kumar', 2)
