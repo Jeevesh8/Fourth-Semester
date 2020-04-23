@@ -1,10 +1,11 @@
--- Schedule for deleting rows older than 1 year automatically every day.
+/*Schedule for deleting rows older than 1 year automatically every day.*/
 
 CREATE OR REPLACE PROCEDURE delete_trips
 AS
     BEGIN
         DBMS_OUTPUT.PUT_LINE('Here');
-        DELETE FROM trip y where sysdate > add_months(y.arrival_date,12);
+        DELETE FROM trip y 
+            WHERE sysdate > add_months(y.arrival_date,12);
     END;
 /
 BEGIN

@@ -27,7 +27,8 @@
     ALTER TABLE Driver Drop CONSTRAINT fk_from_driver_to_trip;
 
     UPDATE Driver
-    SET Driver.t_id = (SELECT request_id FROM Requests WHERE Requests.t_id=Driver.t_id);
+    SET Driver.t_id = (SELECT request_id FROM Requests 
+                        WHERE Requests.t_id=Driver.t_id);
 
     ALTER TABLE Driver RENAME COLUMN t_id TO request_id;
 
