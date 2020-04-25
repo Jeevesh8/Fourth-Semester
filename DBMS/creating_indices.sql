@@ -8,7 +8,10 @@ Most Common Queries :-
 */
 
 --Drop Index
-Drop Index dest_idx, source_idx, search_idx, date_idx on Trip;
+Drop Index dest_idx;
+Drop Index  date_idx;
+Drop Index  search_idx;
+Drop Index  source_idx;
 
 --Single Index
 Create Index dest_idx on Trip(destination);
@@ -17,6 +20,6 @@ Create Index source_idx on Trip(source);
 --Composite or Compound Index
 Create Index search_idx on Trip(destination, source); 
 
---Assuming we need query using only arrival_date 
+--Assuming we need query using only departure_date 
 --and (arrival date, departure_date) to be faster.
-Create Index date_idx on Trip(arrival_date, depature_date);
+Create Index date_idx on Trip(departure_date, arrival_date);
