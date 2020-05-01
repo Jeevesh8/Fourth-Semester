@@ -25,6 +25,13 @@ MAXVALUE 999999999999999999999
 INCREMENT BY 1
 CACHE 20;
 
+CREATE SEQUENCE vehicle_ids
+MINVALUE 0
+START WITH 0
+MAXVALUE 9999999999999999999999
+INCREMENT BY 1
+CACHE 20;
+
 --Procedure to register a driver and get priveledges and views. 
 
 CREATE OR REPLACE FUNCTION register_driver(driver_name IN VARCHAR, pass_word IN VARCHAR) RETURN NUMBER AS
@@ -48,6 +55,24 @@ BEGIN
   
     EXECUTE IMMEDIATE sql_stmt;
   
+    EXECUTE IMMEDIATE sql_stmt;
+  
+    sql_stmt := 'CREATE OR REPLACE TRIGGER reg_vehicle'||driver_id||  
+               ' INSTEAD OF INSERT ON '||new_view_name||
+               ' FOR EACH ROW 
+                 DECLARE 
+                 vehicle_id NUMBER;
+                 BEGIN
+                 vehicle_id := vehicle_ids.nextval;
+                 INSERT INTO Vehicle VALUES(:NEW.Model, :NEW.Seats, :NEW.reg_no, vehicle_id, '||driver_id||');
+                 END;';
+    
+    EXECUTE IMMEDIATE sql_stmt;
+    
+    sql_stmt := 'ALTER TRIGGER reg_vehicle'||driver_id||' ENABLE';
+  	
+  	EXECUTE IMMEDIATE sql_stmt;
+  
     sql_stmt := 'grant insert, update, select, delete on '||new_view_name||' to '||driver_name;  
     
     EXECUTE IMMEDIATE sql_stmt;
@@ -60,6 +85,19 @@ BEGIN
 
 END register_driver;
 /
+
+/*
+Example Call
+
+DECLARE
+  l_driver_id NUMBER;
+BEGIN
+  l_driver_id := register_driver1('Roy2', 'wt89DefREYdg$');
+END;
+/
+
+*/
+
 
 /*
 NOTES:-
